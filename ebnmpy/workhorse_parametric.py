@@ -14,14 +14,27 @@ from .output import (
     posterior_in_output,
     sampler_in_output,
 )
-from .rutils import stop
+from .r_utils import stop
 
 
 def handle_optmethod_parameter(optmethod, fix_par):
+    if optmethod is None:
+        optmethod = "lbfgsb"
+
+    if optmethod == "nlm":
+        return dict(fn="nlm", use_grad=True, use_hess=True)
     if optmethod == "lbfgsb":
         return dict(fn="lbfgsb", use_grad=True, use_hess=False)
+    if optmethod == "trust":
+        return dict(fn="trust", use_grad=True, use_hess=True)
+    if optmethod == "nograd_nlm":
+        return dict(fn="nlm", use_grad=False, use_hess=False)
     if optmethod == "nograd_lbfgsb":
         return dict(fn="lbfgsb", use_grad=False, use_hess=False)
+    if optmethod == "nohess_nlm":
+        return dict(fn="nlm", use_grad=True, use_hess=False)
+    if optmethod == "optimize":
+        return dict(fn="optimize", use_grad=False, use_hess=False)
 
     raise NotImplementedError
 
@@ -56,7 +69,8 @@ def mle_parametric(
         p[0] = np.sign(p[0]) * np.log(x)
 
     if all(fix_par):
-        raise NotImplementedError
+        optpar = par_init
+        optval = nllik_fn(par=None, calc_grad=False, calc_hess=False, **fn_params)
     elif optmethod == "lbfgsb":
         control = dict(lbfgsb_control_defaults(), **control)
 
@@ -87,7 +101,12 @@ def mle_parametric(
     retpar = par_init
 
     retpar_values = np.array(list(retpar.values()))
-    retpar_values[~fix_par] = optpar
+
+    if isinstance(optpar, dict):
+        retpar_values[~fix_par] = np.array(list(optpar.values()))[~fix_par]
+    else:
+        retpar_values[~fix_par] = optpar
+
     retpar = dict(zip(list(retpar), retpar_values))
 
     retpar = scalepar_fn(par=retpar, scale_factor=1 / scale_factor)

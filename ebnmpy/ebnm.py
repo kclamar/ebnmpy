@@ -14,7 +14,7 @@ from .point_normal import (
     pn_scalepar,
     pn_summres,
 )
-from .rutils import stop
+from .r_utils import stop
 from .workhorse_parametric import parametric_workhorse
 
 

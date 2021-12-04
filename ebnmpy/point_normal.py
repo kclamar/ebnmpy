@@ -19,7 +19,7 @@ def pn_checkg(g_init, fix_g, mode, scale, pointmass):
 
 
 def pn_initpar(g_init, mode, scale, pointmass, x, s):
-    if g_init is not None and len(g_init["pi"]) == 1:
+    if g_init is not None and (isinstance(g_init["pi"], (float, int)) or len(g_init["pi"]) == 1):
         par = dict(alpha=-np.inf, beta=2 * log(g_init["sd"]), mu=g_init["mean"])
     elif g_init is not None and len(g_init["pi"]) == 2:
         par = dict(
@@ -36,7 +36,7 @@ def pn_initpar(g_init, mode, scale, pointmass, x, s):
             par["alpha"] = 0
 
         if scale != "estimate":
-            if len(scale) != 1:
+            if not isinstance(scale, (int, float)) and len(scale) != 1:
                 raise Exception("Argument 'scale' must be either 'estimate' or a scalar.")
             par["beta"] = 2 * log(scale)
         else:
