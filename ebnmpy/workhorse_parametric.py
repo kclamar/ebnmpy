@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 from scipy.optimize import minimize
 
@@ -12,6 +14,7 @@ from .output import (
     posterior_in_output,
     sampler_in_output,
 )
+from .rutils import stop
 
 
 def handle_optmethod_parameter(optmethod, fix_par):
@@ -61,7 +64,10 @@ def mle_parametric(
             return nllik_fn(par, calc_grad=False, calc_hess=False, **kwargs)
 
         if use_grad:
-            raise NotImplementedError
+
+            def gr(par, kwargs):
+                return nllik_fn(par, calc_grad=True, calc_hess=False, **kwargs)
+
         else:
             gr = None
 
@@ -194,5 +200,19 @@ def check_g_init(
     scale_name,
     mode_name="mean",
 ):
-    # TODO
-    pass
+    if g_init is not None:
+        ncomp = len(np.array([g_init["pi"]]).ravel())
+        if not (ncomp == 1 or (pointmass and ncomp == 2)):
+            stop("g_init does not have the correct number of components.")
+        if ncomp == 2 and g_init[scale_name][0] != 0:
+            stop("The first component of g_init must be a point mass.")
+
+        if fix_g and (mode is not None or scale is not None):
+            warnings.warn("mode and scale parameters are ignored when g is fixed.")
+
+        if not fix_g:
+            if mode is not None and mode != "estimate" and not np.all(g_init[mode_name] == mode):
+                stop("If mode is fixed and g_init is supplied, they must agree.")
+            g_scale = g_init[scale_name][ncomp - 1]
+            if scale is not None and scale != "estimate" and not np.all(g_scale == scale):
+                stop("If scale is fixed and g_init is supplied, they must agree.")

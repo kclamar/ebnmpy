@@ -154,8 +154,28 @@ def pn_nllik(
     nllik = nllik - sum(log(exp(y - C) + exp(alpha - C)) + C)
 
     if calc_grad or calc_hess:
-        # TODO
-        raise NotImplementedError
+        dlogist_beta = logist_beta * logist_nbeta
+
+        logist_y = 1 / (1 + exp(alpha - y))  # vector
+        logist_ny = 1 / (1 + exp(y - alpha))
+
+        # Gradient.
+        grad = np.zeros(len(par))
+        i = 0
+        if not fix_pi0:
+            grad[i] = -n0 * logist_nalpha + (n1 + n2) * logist_alpha - sum(logist_ny)
+            i = i + 1
+
+        if not fix_s2:
+            dy_dbeta = 0.5 * (z * dlogist_beta - logist_beta)
+            grad[i] = 0.5 * (n1 - sum1 * exp(-beta)) - sum(logist_y * dy_dbeta)
+            i = i + 1
+
+        if not fix_mu:
+            dy_dmu = (mu - x) * logist_beta / s2
+            grad[i] = sum((mu - x) / s2) - sum(logist_y * dy_dmu)
+
+        return grad
 
     if calc_hess:
         # TODO
