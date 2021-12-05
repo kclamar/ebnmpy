@@ -3,6 +3,17 @@ import warnings
 import numpy as np
 
 from .output import as_ebnm, lfsr_arg_str, output_all, output_default
+from .point_laplace import (
+    pl_checkg,
+    pl_initpar,
+    pl_nllik,
+    pl_partog,
+    pl_postcomp,
+    pl_postsamp,
+    pl_precomp,
+    pl_scalepar,
+    pl_summres,
+)
 from .point_normal import (
     pn_checkg,
     pn_initpar,
@@ -94,8 +105,27 @@ def ebnm_workhorse(
             postsamp_fn=pn_postsamp,
         )
     elif prior_family == "point_laplace":
-        # TODO
-        raise NotImplementedError
+        retlist = parametric_workhorse(
+            x=x,
+            s=s,
+            mode=mode,
+            scale=scale,
+            pointmass=True,
+            g_init=g_init,
+            fix_g=fix_g,
+            output=output,
+            optmethod=optmethod,
+            control=control,
+            checkg_fn=pl_checkg,
+            initpar_fn=pl_initpar,
+            scalepar_fn=pl_scalepar,
+            precomp_fn=pl_precomp,
+            nllik_fn=pl_nllik,
+            postcomp_fn=pl_postcomp,
+            summres_fn=pl_summres,
+            partog_fn=pl_partog,
+            postsamp_fn=pl_postsamp,
+        )
     elif prior_family == "point_exponential":
         # TODO
         raise NotImplementedError
