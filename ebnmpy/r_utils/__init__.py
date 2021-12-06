@@ -37,3 +37,11 @@ def length(x):
     if np.isscalar(x):
         return 1
     return len(x)
+
+
+def asvector(x):
+    return np.asarray(x)
+
+
+def seq(a, b, by):
+    return np.arange(a, b + by, by)

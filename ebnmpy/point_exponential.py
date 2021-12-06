@@ -5,7 +5,7 @@ from .ashr import my_e2truncnorm, my_etruncnorm
 from .output import result_in_output
 from .point_laplace import logscale_add
 from .r_utils import length, numeric, pmax, rep, stop, unlist
-from .r_utils.stat import dnorm, pnorm, rbinom, rtruncnorm
+from .r_utils.stats import dnorm, pnorm, rbinom, rtruncnorm
 from .workhorse_parametric import check_g_init
 
 

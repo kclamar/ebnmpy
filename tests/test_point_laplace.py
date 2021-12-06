@@ -4,7 +4,7 @@ from utils import expect_equal, expect_false, expect_identical
 from ebnmpy.ebnm import ebnm
 from ebnmpy.ebnm_fns import ebnm_point_laplace
 from ebnmpy.output import g_ret_str, samp_arg_str, samp_ret_str
-from ebnmpy.r_utils.stat import rnorm
+from ebnmpy.r_utils.stats import rnorm
 
 n = 1000
 np.random.seed(0)

@@ -4,7 +4,7 @@ from numpy import exp, inf, log, mean, sqrt
 from .ashr import my_e2truncnorm, my_etruncnorm
 from .output import result_in_output
 from .r_utils import numeric, pmax, pmin, rep, stop, unlist
-from .r_utils.stat import dnorm, pnorm, rbinom, rtruncnorm
+from .r_utils.stats import dnorm, pnorm, rbinom, rtruncnorm
 from .workhorse_parametric import check_g_init
 
 

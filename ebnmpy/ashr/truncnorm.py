@@ -3,8 +3,8 @@ import warnings
 import numpy as np
 from numpy import exp, log
 
-from .r_utils import pmax, pmin, rep, stop
-from .r_utils.stat import dnorm, pnorm
+from ebnmpy.r_utils import pmax, pmin, rep, stop
+from ebnmpy.r_utils.stats import dnorm, pnorm
 
 
 def my_etruncnorm(a, b, mean=0, sd=1):
