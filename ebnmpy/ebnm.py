@@ -36,7 +36,7 @@ from .point_normal import (
     pn_scalepar,
     pn_summres,
 )
-from .r_utils import stop
+from .r_utils import length, stop
 from .workhorse_parametric import parametric_workhorse
 
 
@@ -79,6 +79,14 @@ def ebnm_workhorse(
     control,
     prior_family,
 ):
+    if np.isscalar(x):
+        x = np.array(x)
+    if np.isscalar(s):
+        s = np.array([s])
+
+    x = x.copy()
+    s = s.copy()
+
     check_args(x, s, g_init, fix_g, output, mode)
     mode = handle_mode_parameter(mode)
     scale = handle_scale_parameter(scale)
@@ -218,25 +226,25 @@ def ebnm_workhorse(
 
 
 def check_args(x, s, g_init, fix_g, output, mode):
-    if len(s) not in (1, len(x)):
+    if length(s) not in (1, len(x)):
         stop("Argument 's' must have either length 1 or the same length as argument 'x'.")
 
-    if any(np.isnan(x)):
+    if np.any(np.isnan(x)):
         stop("Missing observations are not allowed.")
 
-    if any(np.isnan(s)):
+    if np.any(np.isnan(s)):
         stop("Missing standard errors are not allowed.")
 
-    if any(s <= 0):
+    if np.any(s <= 0):
         stop("Standard errors must be positive (and nonzero).")
 
-    if any(np.isinf(s)):
+    if np.any(np.isinf(s)):
         stop("Standard errors cannot be infinite.")
 
     if fix_g and g_init is None:
         stop("If g is fixed, then an initial g must be provided.")
 
-    if not all(i in output_all() for i in output):
+    if not np.all(i in output_all() for i in output):
         stop("Invalid argument to output. See function output_all() for a list of valid outputs.")
 
 

@@ -37,7 +37,9 @@ def pe_initpar(g_init, mode, scale, pointmass, x, s):
         par = dict(alpha=inf, beta=-log(g_init["scale"]), mu=g_init["shift"])
     elif g_init is not None and length(g_init["pi"]) == 2:
         par = dict(
-            alpha=log(1 / g_init["pi"][0] - 1), beta=-log(g_init["scale"][1]), mu=g_init["shift"][0]
+            alpha=log(1 / g_init["pi"][0] - 1) if g_init["pi"][0] != 0 else inf,
+            beta=-log(g_init["scale"][1]),
+            mu=g_init["shift"][0],
         )
     else:
         par = dict()
@@ -206,12 +208,12 @@ def wpost_exp(x, s, w, a):
 
 
 def pe_partog(par):
-    pi0 = 1 / exp(par["alpha"] + 1)
+    pi0 = 1 / (exp(par["alpha"]) + 1)
     scale = exp(-par["beta"])
     mode = par["mu"]
 
     if pi0 == 0:
-        g = gammamix(pi=1, shape=1, scale=scale, mode=mode)
+        g = gammamix(pi=1, shape=1, scale=scale, shift=mode)
     else:
         g = gammamix(pi=(pi0, 1 - pi0), shape=(1, 1), scale=(0, scale), shift=rep(mode, 2))
 

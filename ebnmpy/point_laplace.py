@@ -3,7 +3,7 @@ from numpy import exp, inf, log, mean, sqrt
 
 from .ashr import my_e2truncnorm, my_etruncnorm
 from .output import result_in_output
-from .r_utils import numeric, pmax, pmin, rep, stop, unlist
+from .r_utils import length, numeric, pmax, pmin, rep, stop, unlist
 from .r_utils.stats import dnorm, pnorm, rbinom, rtruncnorm
 from .workhorse_parametric import check_g_init
 
@@ -25,12 +25,13 @@ def pl_checkg(g_init, fix_g, mode, scale, pointmass):
 
 
 def pl_initpar(g_init, mode, scale, pointmass, x, s):
-    print(g_init)
     if g_init is not None and (np.isscalar(g_init["pi"]) or len(g_init["pi"]) == 1):
         par = dict(alpha=inf, beta=-log(g_init["scale"]), mu=g_init["mean"])
     elif g_init is not None and len(g_init["pi"]) == 2:
         par = dict(
-            alpha=log(1 / g_init["pi"][0] - 1), beta=-log(g_init["scale"][1]), mu=g_init["mean"][0]
+            alpha=log(1 / g_init["pi"][0] - 1) if g_init["pi"][0] != 0 else inf,
+            beta=-log(g_init["scale"][1]),
+            mu=g_init["mean"][0],
         )
     else:
         par = dict()
@@ -40,7 +41,7 @@ def pl_initpar(g_init, mode, scale, pointmass, x, s):
             par["alpha"] = 0
 
         if scale != "estimate":
-            if not np.isscalar(scale) and len(scale) != 1:
+            if length(scale) != 1:
                 stop("Argument 'scale' must be either 'estimate' or a scalar.")
             par["beta"] = -log(scale)
         else:
@@ -49,7 +50,6 @@ def pl_initpar(g_init, mode, scale, pointmass, x, s):
             par["mu"] = mode
         else:
             par["mu"] = mean(x)
-    print(par)
 
     return par
 

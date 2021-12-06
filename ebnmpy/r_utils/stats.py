@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.stats import norm, truncnorm
+from scipy.stats import expon, norm, truncnorm
 
 
 def dnorm(x, mean=0, sd=1, log=False):
@@ -28,3 +28,7 @@ def rbinom(n, size, prob):
 
 def rtruncnorm(n, a=-np.inf, b=np.inf, mean=0, sd=1):
     return truncnorm.rvs(a=a, b=b, loc=mean, scale=sd, size=n)
+
+
+def rexp(n, rate):
+    return expon.rvs(loc=0, scale=1 / rate, size=n)
