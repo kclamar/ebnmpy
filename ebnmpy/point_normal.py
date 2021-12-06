@@ -1,8 +1,9 @@
 import numpy as np
-from numpy import exp, log, sqrt
+from numpy import exp, inf, log, mean, sqrt
 from scipy.stats import binom, norm
 
 from .output import lfsr_in_output, result_in_output
+from .r_utils import length, stop
 from .workhorse_parametric import check_g_init
 
 
@@ -19,9 +20,9 @@ def pn_checkg(g_init, fix_g, mode, scale, pointmass):
 
 
 def pn_initpar(g_init, mode, scale, pointmass, x, s):
-    if g_init is not None and (isinstance(g_init["pi"], (float, int)) or len(g_init["pi"]) == 1):
-        par = dict(alpha=-np.inf, beta=2 * log(g_init["sd"]), mu=g_init["mean"])
-    elif g_init is not None and len(g_init["pi"]) == 2:
+    if g_init is not None and length(g_init["pi"]) == 1:
+        par = dict(alpha=-inf, beta=2 * log(g_init["sd"]), mu=g_init["mean"])
+    elif g_init is not None and length(g_init["pi"]) == 2:
         par = dict(
             alpha=-log(1 / g_init["pi"][0] - 1),
             beta=2 * log(g_init["sd"][1]),
@@ -31,21 +32,21 @@ def pn_initpar(g_init, mode, scale, pointmass, x, s):
         par = dict()
 
         if not pointmass:
-            par["alpha"] = -np.inf
+            par["alpha"] = -inf
         else:
             par["alpha"] = 0
 
         if scale != "estimate":
-            if not isinstance(scale, (int, float)) and len(scale) != 1:
-                raise Exception("Argument 'scale' must be either 'estimate' or a scalar.")
+            if length(scale) != 1:
+                stop("Argument 'scale' must be either 'estimate' or a scalar.")
             par["beta"] = 2 * log(scale)
         else:
-            par["beta"] = log(np.mean(x ** 2))  # default
+            par["beta"] = log(mean(x ** 2))  # default
 
         if mode != "estimate":
             par["mu"] = mode
         else:
-            par["mu"] = np.mean(x)  # default
+            par["mu"] = mean(x)  # default
 
     return par
 
@@ -63,13 +64,10 @@ def pn_scalepar(par, scale_factor):
 def pn_precomp(x, s, par_init, fix_par):
     fix_mu = fix_par[2]
 
-    if not fix_mu and any(s == 0):
-        raise Exception(
-            "The mode cannot be estimated if any SE is zero (the gradient does ",
-            "not exist).",
-        )
+    if not fix_mu and np.any(s == 0):
+        stop("The mode cannot be estimated if any SE is zero (the gradient does not exist).")
 
-    if any(s == 0):
+    if np.any(s == 0):
         which_s0 = np.equal(s, 0)
         which_x_nz = np.not_equal(x[which_s0], par_init["mu"])
         n0 = sum(which_s0) - sum(which_x_nz)
@@ -209,7 +207,7 @@ def pn_postcomp(
         pi0_llik = sum(-0.5 * log(2 * np.pi * s ** 2) - 0.5 * (x - par_init["mu"]) ** 2 / s ** 2)
         pi0_llik = pi0_llik + sum(np.isfinite(x)) * log(scale_factor)
         if pi0_llik > llik:
-            retlist["par"]["alpha"] = np.inf
+            retlist["par"]["alpha"] = inf
             retlist["par"]["beta"] = 0
             retlist["val"] = pi0_llik
 

@@ -41,11 +41,5 @@ def test_fix_g():
 
 
 def test_output_parameter():
-    # pass
     norm_res = ebnm_normal(x, s, output=(samp_arg_str(),))
     expect_identical(tuple(norm_res), (samp_ret_str(),))
-
-
-def test_compute_summary_results():
-    # TODO
-    pass

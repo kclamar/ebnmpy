@@ -1,5 +1,4 @@
 import numpy as np
-from pytest import approx
 
 
 def expect_identical(a, b):
@@ -10,13 +9,16 @@ def expect_identical(a, b):
         assert np.all(a == b)
 
 
-def expect_equal(current, target, tolerance=None):
+def expect_equal(current, target, tolerance=1.5e-8):
     if isinstance(current, dict) and isinstance(target, dict):
         return expect_equal(
             np.array(list(current.values())), np.array(list(target.values())), tolerance
         )
 
-    assert current == approx(target, rel=tolerance, abs=tolerance)
+    mean_abs_diff = np.mean(np.abs(current - target))
+
+    if mean_abs_diff >= tolerance:
+        assert mean_abs_diff / np.mean(np.abs(target)) < tolerance
 
 
 def expect_false(value):
