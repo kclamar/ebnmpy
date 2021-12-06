@@ -66,7 +66,7 @@ def mle_parametric(
     p = np.array(list(par_init.values()))[~np.array(fix_par)]
 
     if (not fix_par[1]) and np.isinf(p[0]):
-        p[0] = np.sign(p[0]) * np.log(x)
+        p[0] = np.sign(p[0]) * np.log(len(x))
 
     if all(fix_par):
         optpar = par_init
@@ -230,7 +230,8 @@ def check_g_init(
             warnings.warn("mode and scale parameters are ignored when g is fixed.")
 
         if not fix_g:
-            if mode is not None and mode != "estimate" and not np.all(g_init[mode_name] == mode):
+            g_mode = np.array(g_init[mode_name])
+            if mode is not None and mode != "estimate" and not np.all(g_mode == mode):
                 stop("If mode is fixed and g_init is supplied, they must agree.")
             g_scale = g_init[scale_name][ncomp - 1]
             if scale is not None and scale != "estimate" and not np.all(g_scale == scale):

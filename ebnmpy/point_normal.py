@@ -24,7 +24,7 @@ def pn_initpar(g_init, mode, scale, pointmass, x, s):
         par = dict(alpha=-inf, beta=2 * log(g_init["sd"]), mu=g_init["mean"])
     elif g_init is not None and length(g_init["pi"]) == 2:
         par = dict(
-            alpha=-log(1 / g_init["pi"][0] - 1),
+            alpha=(-log(1 / g_init["pi"][0] - 1)) if g_init["pi"][0] != 0 else -inf,
             beta=2 * log(g_init["sd"][1]),
             mu=g_init["mean"][0],
         )
