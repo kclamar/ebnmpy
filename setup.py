@@ -14,6 +14,7 @@ setup(
     extras_require=dict(
         dev=[
             "pre-commit",
+            "pytest",
         ]
     ),
     python_requires=">=3.8",
