@@ -35,7 +35,7 @@ def ebnm_point_laplace(
     g_init=None,
     fix_g=False,
     output=output_default(),
-    optmethod=None,
+    optmethod="nograd_lbfgsb",
     control=None,
 ):
     return ebnm_workhorse(

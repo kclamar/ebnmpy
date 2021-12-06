@@ -9,7 +9,7 @@ def expect_identical(a, b):
         assert np.all(a == b)
 
 
-def expect_equal(current, target, tolerance=1.5e-8):
+def expect_equal(current, target, tolerance=1e-6):
     if isinstance(current, dict) and isinstance(target, dict):
         return expect_equal(
             np.array(list(current.values())), np.array(list(target.values())), tolerance
