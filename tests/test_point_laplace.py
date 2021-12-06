@@ -19,7 +19,7 @@ true_mean = 0
 true_g = dict(pi=(true_pi0, 1 - true_pi0), mean=(true_mean,) * 2, scale=(0, true_scale))
 
 np.random.seed(0)
-pl_res = ebnm(x, s, prior_family="point_laplace", optmethod="nograd_lbfgsb")
+pl_res = ebnm(x, s, prior_family="point_laplace")
 
 
 def test_basic_functionality():

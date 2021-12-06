@@ -95,7 +95,7 @@ def pl_nllik(par, x, s, par_init, fix_par, calc_grad, calc_hess):
     lg = logscale_add(lgleft, lgright)
 
     llik = logscale_add(log(1 - w) + lf, log(w) + lg)
-    nllik = -sum(llik)
+    nllik = -np.nansum(llik)
 
     if calc_grad or calc_hess:
         grad = numeric(len(par))
@@ -107,7 +107,7 @@ def pl_nllik(par, x, s, par_init, fix_par, calc_grad, calc_hess):
             dw_dalpha = w * (1 - w)
             dnllik_dalpha = dnllik_dw * dw_dalpha
 
-            grad[i] = sum(dnllik_dalpha)
+            grad[i] = np.nansum(dnllik_dalpha)
             i += 1
         if not fix_a or not fix_mu:
             dlogpnorm_left = -exp(-log(2 * np.pi) / 2 - xleft ** 2 / 2 - lpnormleft)
@@ -120,7 +120,7 @@ def pl_nllik(par, x, s, par_init, fix_par, calc_grad, calc_hess):
             da_dbeta = a
             dnllik_dbeta = dnllik_da * da_dbeta
 
-            grad[i] = sum(dnllik_dbeta)
+            grad[i] = np.nansum(dnllik_dbeta)
             i += 1
         if not fix_mu:
             df_dmu = exp(lf - llik) * ((x - mu) / s ** 2)
@@ -129,7 +129,7 @@ def pl_nllik(par, x, s, par_init, fix_par, calc_grad, calc_hess):
             dg_dmu = dgleft_dmu + dgright_dmu
             dnllik_dmu = -(1 - w) * df_dmu - w * dg_dmu
 
-            grad[i] = sum(dnllik_dmu)
+            grad[i] = np.nansum(dnllik_dmu)
 
         return grad
 
