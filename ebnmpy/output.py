@@ -1,6 +1,3 @@
-import numpy as np
-
-
 def output_default():
     return pm_arg_str(), psd_arg_str(), g_arg_str(), llik_arg_str()
 
@@ -79,21 +76,6 @@ def samp_ret_str():
 
 def as_ebnm(retlist):
     return retlist
-
-
-def ash_output(output):
-    ash_arg_str = (
-        "PosteriorMean",
-        "PosteriorSD",
-        "PosteriorSD",
-        "lfsr",
-        "fitted_g",
-        "loglik",
-        "post_sampler",
-    )
-    which_args = np.isin(output, output_all())
-
-    return np.array(ash_arg_str)[which_args]
 
 
 def lfsr_in_output(output):

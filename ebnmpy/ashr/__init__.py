@@ -1,4 +1,3 @@
-from .ashr import ash
 from .truncnorm import my_e2truncnorm, my_etruncnorm
 
 
