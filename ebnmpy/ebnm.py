@@ -84,8 +84,8 @@ def ebnm_workhorse(
     if np.isscalar(s):
         s = np.array([s])
 
-    # x = x.copy()
-    # s = s.copy()
+    x = x.copy()
+    s = s.copy()
 
     check_args(x, s, g_init, fix_g, output, mode)
     mode = handle_mode_parameter(mode)

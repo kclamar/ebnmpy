@@ -166,7 +166,7 @@ def pe_summres(x, s, optpar, output):
 
 
 def pe_summres_untransformed(x, s, w, a, mu, output):
-    x -= mu
+    x = x - mu
 
     wpost = wpost_exp(x, s, w, a)
 
@@ -229,7 +229,7 @@ def pe_postsamp(x, s, optpar, nsamp):
 
 
 def pe_postsamp_untransformed(x, s, w, a, mu, nsamp):
-    x -= mu
+    x = x - mu
 
     wpost = wpost_exp(x, s, w, a)
 

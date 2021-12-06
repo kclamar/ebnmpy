@@ -171,7 +171,7 @@ def pl_summres(x, s, optpar, output):
 
 
 def pl_summres_untransformed(x, s, w, a, mu, output):
-    x -= mu
+    x = x - mu
 
     wpost = wpost_laplace(x, s, w, a)
     lm = lambda_(x, s, a)
@@ -255,7 +255,7 @@ def pl_postsamp(x, s, optpar, nsamp):
 
 
 def pl_postsamp_untransformed(x, s, w, a, mu, nsamp):
-    x -= mu
+    x = x - mu
     wpost = wpost_laplace(x, s, w, a)
     lam = lambda_(x, s, a)
 
