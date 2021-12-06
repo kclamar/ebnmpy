@@ -31,3 +31,9 @@ def pmax(a, b):
 
 def pmin(a, b):
     return np.minimum(a, b)
+
+
+def length(x):
+    if np.isscalar(x):
+        return 1
+    return len(x)
