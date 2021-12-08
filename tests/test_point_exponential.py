@@ -55,9 +55,6 @@ def test_fixing_g_works():
 
 def test_initializing_g_works():
     res2 = ebnm_point_exponential(x, s, g_init=true_g)
-
-    print()
-    print(f"{res2[llik_ret_str()]=}")
     expect_equal(res[llik_ret_str()], res2[llik_ret_str()])
 
 
