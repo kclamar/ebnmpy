@@ -1,11 +1,12 @@
 import numpy as np
 from numpy import exp, inf, log, mean, sqrt
+from scipy.stats import bernoulli
 
 from .ashr import my_e2truncnorm, my_etruncnorm
 from .output import result_in_output
 from .point_laplace import logscale_add
 from .r_utils import length, numeric, pmax, rep, stop, unlist
-from .r_utils.stats import dnorm, pnorm, rbinom, rtruncnorm
+from .r_utils.stats import dnorm, pnorm, rtruncnorm
 from .workhorse_parametric import check_g_init
 
 
@@ -235,17 +236,17 @@ def pe_postsamp_untransformed(x, s, w, a, mu, nsamp):
 
     nobs = length(wpost)
 
-    is_nonnull = rbinom(nsamp * nobs, 1, rep(wpost, each=nsamp)).reshape(nsamp, nobs)
+    is_nonnull = bernoulli.rvs(wpost, size=(nsamp, nobs)) != 0
 
     if length(s) == 1:
         s = rep(s, nobs)
 
-    samp = np.zeros((nsamp, length(wpost)))
+    samp = np.zeros((nsamp, nobs))
     positive_samp = np.array(
         [rtruncnorm(nsamp, 0, inf, mi, si) for mi, si in zip(x - s ** 2 * a, s)]
     ).T
 
-    samp[is_nonnull == 1] = positive_samp[is_nonnull == 1]
-    samp += mu
+    samp[is_nonnull] = positive_samp[is_nonnull]
+    samp = samp + mu
 
     return samp
