@@ -235,16 +235,17 @@ def pe_postsamp_untransformed(x, s, w, a, mu, nsamp):
 
     nobs = length(wpost)
 
-    is_nonnull = rbinom(nsamp * nobs, 1, rep(wpost, each=nsamp))
+    is_nonnull = rbinom(nsamp * nobs, 1, rep(wpost, each=nsamp)).reshape(nsamp, nobs)
 
     if length(s) == 1:
         s = rep(s, nobs)
 
-    positive_samp = rtruncnorm(nsamp, 0, inf, x - s ** 2 * a, s)
-
     samp = np.zeros((nsamp, length(wpost)))
-    samp[is_nonnull == 1] = positive_samp[is_nonnull == 1]
+    positive_samp = np.array(
+        [rtruncnorm(nsamp, 0, inf, mi, si) for mi, si in zip(x - s ** 2 * a, s)]
+    ).T
 
+    samp[is_nonnull == 1] = positive_samp[is_nonnull == 1]
     samp += mu
 
     return samp

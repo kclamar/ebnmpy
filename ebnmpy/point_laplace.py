@@ -261,14 +261,18 @@ def pl_postsamp_untransformed(x, s, w, a, mu, nsamp):
 
     nobs = len(wpost)
 
-    is_nonnull = rbinom(nsamp * nobs, 1, rep(wpost, each=nsamp))
-    is_positive = rbinom(nsamp * nobs, 1, rep(lam, each=nsamp))
+    is_nonnull = rbinom(nsamp * nobs, 1, rep(wpost, each=nsamp)).reshape(nsamp, nobs)
+    is_positive = rbinom(nsamp * nobs, 1, rep(lam, each=nsamp)).reshape(nsamp, nobs)
 
     if len(s) == 1:
         s = rep(s, nobs)
 
-    negative_samp = rtruncnorm(nsamp, -inf, 0, x + s ** 2 * a, s)
-    positive_samp = rtruncnorm(nsamp, 0, inf, x - s ** 2 * a, s)
+    negative_samp = np.array(
+        [rtruncnorm(nsamp, -inf, 0, mi, si) for mi, si in zip(x + s ** 2 * a, s)]
+    ).T
+    positive_samp = np.array(
+        [rtruncnorm(nsamp, 0, inf, mi, si) for mi, si in zip(x - s ** 2 * a, s)]
+    ).T
 
     samp = np.zeros((nsamp, len(wpost)))
     samp[is_nonnull & is_positive] = positive_samp[is_nonnull & is_positive]
