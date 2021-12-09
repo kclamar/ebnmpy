@@ -1,10 +1,11 @@
 import numpy as np
 from numpy import exp, inf, log, mean, sqrt
+from scipy.stats import bernoulli
 
 from .ashr import my_e2truncnorm, my_etruncnorm
 from .output import result_in_output
 from .r_utils import length, numeric, pmax, pmin, rep, stop, unlist
-from .r_utils.stats import dnorm, pnorm, rbinom, rtruncnorm
+from .r_utils.stats import dnorm, pnorm, rtruncnorm
 from .workhorse_parametric import check_g_init
 
 
@@ -25,9 +26,9 @@ def pl_checkg(g_init, fix_g, mode, scale, pointmass):
 
 
 def pl_initpar(g_init, mode, scale, pointmass, x, s):
-    if g_init is not None and (np.isscalar(g_init["pi"]) or len(g_init["pi"]) == 1):
+    if g_init is not None and length(g_init["pi"]) == 1:
         par = dict(alpha=inf, beta=-log(g_init["scale"]), mu=g_init["mean"])
-    elif g_init is not None and len(g_init["pi"]) == 2:
+    elif g_init is not None and length(g_init["pi"]) == 2:
         par = dict(
             alpha=log(1 / g_init["pi"][0] - 1) if g_init["pi"][0] != 0 else inf,
             beta=-log(g_init["scale"][1]),
@@ -66,7 +67,7 @@ def pl_scalepar(par, scale_factor):
 def pl_precomp(x, s, par_init, fix_par):
     fix_mu = fix_par[2]
 
-    if not fix_mu and any(s == 0):
+    if not fix_mu and np.any(s == 0):
         stop("The mode cannot be estimated if any SE is zero (the gradient does not exist).")
 
     return dict()
@@ -207,12 +208,12 @@ def pl_summres_untransformed(x, s, w, a, mu, output):
 
 def wpost_laplace(x, s, w, a):
     if w == 0:
-        return rep(0, len(x))
+        return np.zeros(len(x))
 
     if w == 1:
-        return rep(1, len(x))
+        return np.ones(len(x))
 
-    lf = dnorm(x, 0, log=True)
+    lf = dnorm(x, 0, s, log=True)
     lg = logg_laplace(x, s, a)
     wpost = w / (w + (1 - w) * exp(lf - lg))
 
@@ -261,8 +262,8 @@ def pl_postsamp_untransformed(x, s, w, a, mu, nsamp):
 
     nobs = len(wpost)
 
-    is_nonnull = rbinom(nsamp * nobs, 1, rep(wpost, each=nsamp)).reshape(nsamp, nobs)
-    is_positive = rbinom(nsamp * nobs, 1, rep(lam, each=nsamp)).reshape(nsamp, nobs)
+    is_nonnull = bernoulli.rvs(wpost, size=(nsamp, nobs)) != 0
+    is_positive = bernoulli.rvs(lam, size=(nsamp, nobs)) != 0
 
     if len(s) == 1:
         s = rep(s, nobs)
@@ -274,7 +275,7 @@ def pl_postsamp_untransformed(x, s, w, a, mu, nsamp):
         [rtruncnorm(nsamp, 0, inf, mi, si) for mi, si in zip(x - s ** 2 * a, s)]
     ).T
 
-    samp = np.zeros((nsamp, len(wpost)))
+    samp = np.zeros((nsamp, nobs))
     samp[is_nonnull & is_positive] = positive_samp[is_nonnull & is_positive]
     samp[is_nonnull & ~is_positive] = negative_samp[is_nonnull & ~is_positive]
 
