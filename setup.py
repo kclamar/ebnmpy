@@ -2,6 +2,7 @@ from setuptools import setup
 
 requirements = [
     "numpy>=1.21.4",
+    "scikit-learn>=1.0.1",
     "scipy>=1.7.3",
 ]
 

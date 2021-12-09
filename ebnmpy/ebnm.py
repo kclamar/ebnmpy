@@ -99,7 +99,7 @@ def ebnm_workhorse(
             "Since they're not well defined for nonzero modes, local false sign rates won't be "
             "returned. "
         )
-        output.pop(lfsr_arg_str())
+        output = tuple(i for i in output if i != lfsr_arg_str())
 
     if prior_family == "point_normal":
         retlist = parametric_workhorse(

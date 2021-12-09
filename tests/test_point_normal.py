@@ -4,6 +4,7 @@ from utils import expect_equal, expect_false, expect_identical
 from ebnmpy.ashr import normalmix
 from ebnmpy.ebnm import ebnm
 from ebnmpy.ebnm_fns import ebnm_point_normal
+from ebnmpy.estimators import PointNormalEBNM
 from ebnmpy.output import g_ret_str, llik_ret_str, samp_arg_str, samp_ret_str
 from ebnmpy.r_utils.stats import rnorm
 
@@ -21,6 +22,11 @@ true_g = dict(pi=(true_pi0, 1 - true_pi0), mean=(true_mean,) * 2, sd=(0, true_sd
 def test_basic_functionality():
     pn_res = ebnm(x, s, prior_family="point_normal")
     pn_res2 = ebnm_point_normal(x, s)
+    est = PointNormalEBNM().fit(x=x, s=s)
+
+    for key, val in pn_res.items():
+        expect_identical(val, getattr(est, key + "_"))
+
     expect_identical(pn_res, pn_res2)
     expect_equal(pn_res[g_ret_str()], true_g, tolerance=0.1)
 
