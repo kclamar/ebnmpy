@@ -1,7 +1,9 @@
 from setuptools import setup
 
 requirements = [
+    "matplotlib>=3.5.0",
     "numpy>=1.21.4",
+    "pandas>=1.3.4",
     "scikit-learn>=1.0.1",
     "scipy>=1.7.3",
 ]

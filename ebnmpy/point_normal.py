@@ -1,6 +1,6 @@
 import numpy as np
 from numpy import exp, inf, log, mean, sqrt
-from scipy.stats import binom, norm
+from scipy.stats import bernoulli, norm
 
 from .output import lfsr_in_output, result_in_output
 from .r_utils import length, stop
@@ -315,12 +315,16 @@ def pn_postsamp_untransformed(x, s, w, a, mu, nsamp):
     pvar_cond = pvar_cond_normal(s, a)
 
     nobs = len(x)
-    is_nonnull = binom.rvs(n=1, p=np.repeat(wpost, nsamp), size=nsamp * nobs)
-    samp = is_nonnull * norm.rvs(
-        loc=np.repeat(pmean_cond, nsamp),
-        scale=np.repeat(sqrt(pvar_cond), nsamp),
-        size=nsamp * nobs,
-    )
-    samp = samp + (1 - is_nonnull) * mu
+    is_nonnull = bernoulli.rvs(wpost, size=(nsamp, nobs)) * 1.0
 
-    return samp.reshape(nsamp, -1)
+    samp = (
+        is_nonnull
+        * norm.rvs(
+            loc=pmean_cond,
+            scale=sqrt(pvar_cond),
+            size=(nsamp, nobs),
+        )
+        + (1 - is_nonnull) * mu
+    )
+
+    return samp
