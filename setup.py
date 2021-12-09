@@ -6,6 +6,7 @@ requirements = [
     "pandas>=1.3.4",
     "scikit-learn>=1.0.1",
     "scipy>=1.7.3",
+    "tqdm",
 ]
 
 
