@@ -8,15 +8,12 @@ from ..output import (
     add_g_to_retlist,
     add_llik_to_retlist,
     add_posterior_to_retlist,
-    add_sampler_to_retlist,
     df_ret_str,
     g_in_output,
     g_ret_str,
     llik_in_output,
     llik_ret_str,
     posterior_in_output,
-    samp_ret_str,
-    sampler_in_output,
 )
 from ..workhorse_parametric import check_g_init, handle_optmethod_parameter
 from .base import BaseEBNM
@@ -85,12 +82,12 @@ class ParametricEBNM(BaseEBNM):
             loglik = optres["val"]
             retlist = add_llik_to_retlist(retlist, loglik)
 
-        if sampler_in_output(output):
+        if self.include_posterior_sampler:
 
             def post_sampler(nsamp):
                 return self._postsamp(x, s, optres["par"], nsamp)
 
-            retlist = add_sampler_to_retlist(retlist, post_sampler)
+            self.posterior_sampler_ = post_sampler
 
         if g_ret_str() in retlist:
             self.fitted_g_ = retlist[g_ret_str()]
@@ -100,9 +97,6 @@ class ParametricEBNM(BaseEBNM):
 
         if llik_ret_str() in retlist:
             self.log_likelihood_ = retlist[llik_ret_str()]
-
-        if samp_ret_str() in retlist:
-            self.posterior_sampler_ = retlist[samp_ret_str()]
 
     def _mle_parametric(self, x, s, par_init, fix_par, optmethod, use_grad, use_hess, control):
         scale_factor = 1 / np.median(s[s > 0])
