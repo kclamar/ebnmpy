@@ -18,6 +18,7 @@ setup(
             "pytest",
         ],
         report=[
+            "jupyter",
             "matplotlib",
             "pandas",
             "seaborn",
