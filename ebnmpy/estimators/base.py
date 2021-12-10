@@ -46,7 +46,9 @@ class BaseEBNM(BaseEstimator):
 
     def fit(self, x, y=None, s=None):
         x, s, output, control = self._check_args(x, y, s)
-        self._fit(x, s, output, control)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            self._fit(x, s, output, control)
         self.n_features_in_ = 1 if len(x.shape) == 1 else x.shape[-1]
 
         return self
