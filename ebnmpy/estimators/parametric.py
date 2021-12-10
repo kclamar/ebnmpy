@@ -179,3 +179,35 @@ class ParametricEBNM(BaseEBNM):
             scale_name=self._scale_name,
             mode_name=self._mode_name,
         )
+
+    @abstractmethod
+    def _initpar(self, g_init, mode, scale, pointmass, x, s):
+        pass
+
+    @abstractmethod
+    def _scalepar(self, par, scale_factor):
+        pass
+
+    @abstractmethod
+    def _precomp(self, x, s, par_init, fix_par):
+        pass
+
+    @abstractmethod
+    def _nllik(self, par, x, s, par_init, fix_par, calc_grad, calc_hess, **kwargs):
+        pass
+
+    @abstractmethod
+    def _postcomp(self, optpar, optval, x, s, par_init, fix_par, scale_factor, **kwargs):
+        pass
+
+    @abstractmethod
+    def _summres(self, x, s, optpar, output):
+        pass
+
+    @abstractmethod
+    def _partog(self, par):
+        pass
+
+    @abstractmethod
+    def _postsamp(self, x, s, optpar, nsamp):
+        pass

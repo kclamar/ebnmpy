@@ -40,12 +40,15 @@ class BaseEBNM(BaseEstimator):
         self.control = control
         self.include_posterior_sampler = include_posterior_sampler
 
+    @abstractmethod
     def _fit(self, x, s, output, control):
         pass
 
     def fit(self, x, y=None, s=None):
         x, s, output, control = self._check_args(x, y, s)
-        self._fit(x, s, output, control)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            self._fit(x, s, output, control)
         self.n_features_in_ = 1 if len(x.shape) == 1 else x.shape[-1]
 
         return self
@@ -82,42 +85,6 @@ class BaseEBNM(BaseEstimator):
         control = dict() if self.control is None else self.control
 
         return x, s, output, control
-
-    @abstractmethod
-    def _checkg(self, g_init, fix_g, mode, scale, pointmass):
-        pass
-
-    @abstractmethod
-    def _initpar(self, g_init, mode, scale, pointmass, x, s):
-        pass
-
-    @abstractmethod
-    def _scalepar(self, par, scale_factor):
-        pass
-
-    @abstractmethod
-    def _precomp(self, x, s, par_init, fix_par):
-        pass
-
-    @abstractmethod
-    def _nllik(self, par, x, s, par_init, fix_par, calc_grad, calc_hess, **kwargs):
-        pass
-
-    @abstractmethod
-    def _postcomp(self, optpar, optval, x, s, par_init, fix_par, scale_factor, **kwargs):
-        pass
-
-    @abstractmethod
-    def _summres(self, x, s, optpar, output):
-        pass
-
-    @abstractmethod
-    def _partog(self, par):
-        pass
-
-    @abstractmethod
-    def _postsamp(self, x, s, optpar, nsamp):
-        pass
 
     def sample(self, n):
         check_is_fitted(self)
