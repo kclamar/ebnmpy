@@ -11,3 +11,19 @@ git clone https://github.com/kclamar/ebnmpy.git
 cd ebnmpy
 pip install .[paper]
 ```
+
+## Example
+```python
+import numpy as np
+from ebnmpy.estimators import PointNormalEBNM
+
+# simulate data
+np.random.seed(0)
+n = 10000
+s = np.random.rand(n) + 1
+x = np.concatenate((np.zeros(n // 2), np.random.normal(0, 10, n // 2)))\
+    + np.random.normal(0, s)
+
+# run ebnm
+estimator = PointNormalEBNM(mode="estimate").fit(x=x, s=s)
+```
