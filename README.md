@@ -8,3 +8,11 @@ git clone https://github.com/kclamar/ebnmpy.git
 cd ebnmpy
 pip install .
 ```
+
+## Installation (for reproducing results in [Willwerscheid and Stephens, 2021](https://arxiv.org/abs/2110.00152))
+
+```bash
+git clone https://github.com/kclamar/ebnmpy.git
+cd ebnmpy
+pip install .[paper]
+```
