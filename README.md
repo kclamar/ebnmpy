@@ -9,5 +9,5 @@ Code for reproducing results in [Willwerscheid and Stephens, 2021](https://arxiv
 ```bash
 git clone https://github.com/kclamar/ebnmpy.git
 cd ebnmpy
-pip install .
+pip install .[paper]
 ```
