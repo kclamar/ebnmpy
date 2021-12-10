@@ -17,7 +17,7 @@ setup(
             "pre-commit",
             "pytest",
         ],
-        report=[
+        paper=[
             "jupyter",
             "matplotlib",
             "pandas",
