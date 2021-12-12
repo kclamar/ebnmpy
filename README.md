@@ -1,3 +1,6 @@
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 # ebnmpy: Python package for fitting the empirical Bayes normal means (EBNM) model
 ebnmpy is a Python package that implements functionalities provided the R package [ebnm](https://github.com/stephenslab/ebnm).
 For more details, refer to the original paper [Willwerscheid, J., & Stephens, M. (2021). ebnm: An R Package for Solving the Empirical Bayes Normal Means Problem Using a Variety of Prior Families.](https://arxiv.org/abs/2110.00152)
